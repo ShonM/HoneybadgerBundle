@@ -1,0 +1,29 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="chesscom_honeybadger.configuration.class">Chesscom\HoneybadgerBundle\Bridge\Configuration</parameter>
+        <parameter key="chesscom_honeybadger.client.class">Chesscom\HoneybadgerBundle\Bridge\Client</parameter>
+        <parameter key="chesscom_honeybadger.exception_listener.class">Chesscom\HoneybadgerBundle\EventListener\ExceptionListener</parameter>
+        <parameter key="chesscom_honeybadger.shutdown_listener.class">Chesscom\HoneybadgerBundle\EventListener\ShutdownListener</parameter>
+    </parameters>
+
+	<services>
+        <service id="chesscom_honeybadger.twig.notifier_extension" class="Chesscom\HoneybadgerBundle\Twig\Extension\NotifierExtension">
+            <tag name="twig.extension" />
+            <argument type="service" id="service_container"/>
+        </service>
+
+        <service id="chesscom_honeybadger.exception_listener" class="%chesscom_honeybadger.exception_listener.class%">
+            <argument>%chesscom_honeybadger.ignored_exceptions%</argument>
+            <tag name="kernel.event_listener" event="kernel.exception" method="onKernelException" />
+        </service>
+
+        <service id="chesscom_honeybadger.shutdown_listener" class="%chesscom_honeybadger.shutdown_listener.class%">
+            <tag name="kernel.event_listener" event="kernel.controller" method="register" />
+        </service>
+	</services>
+</container>

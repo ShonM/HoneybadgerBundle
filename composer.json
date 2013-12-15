@@ -1,0 +1,16 @@
+{
+    "name": "chesscom/honeybadger-bundle",
+    "type": "symfony-bundle",
+    "description": "Honeybadger.io integration for Symfony2",
+    "license": "MIT",
+    "require": {
+        "symfony/symfony": ">=2.3,<2.4-dev",
+        "chesscom/honeybadger-php": "dev-master"
+    },
+    "target-dir": "ChessCom/HoneybadgerBundle",
+    "autoload": {
+        "psr-0": {
+            "Chesscom\\HoneybadgerBundle": ""
+        }
+    }
+}
