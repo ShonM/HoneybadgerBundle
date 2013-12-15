@@ -5,8 +5,8 @@
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <parameters>
-        <parameter key="chesscom_honeybadger.configuration.class">Chesscom\HoneybadgerBundle\Bridge\Configuration</parameter>
-        <parameter key="chesscom_honeybadger.client.class">Chesscom\HoneybadgerBundle\Bridge\Client</parameter>
+        <parameter key="chesscom_honeybadger.config.class">Chesscom\HoneybadgerBundle\Bridge\Config</parameter>
+        <parameter key="chesscom_honeybadger.client.class">Chesscom\HoneybadgerBundle\Bridge\Honeybadger</parameter>
         <parameter key="chesscom_honeybadger.exception_listener.class">Chesscom\HoneybadgerBundle\EventListener\ExceptionListener</parameter>
         <parameter key="chesscom_honeybadger.shutdown_listener.class">Chesscom\HoneybadgerBundle\EventListener\ShutdownListener</parameter>
     </parameters>
@@ -17,12 +17,22 @@
             <argument type="service" id="service_container"/>
         </service>
 
+        <service id="chesscom_honeybadger.config" class="%chesscom_honeybadger.config.class%" public="false">
+            <argument type="service" id="service_container"/>
+        </service>
+
+        <service id="chesscom_honeybadger.client" class="%chesscom_honeybadger.client.class%">
+            <argument type="service" id="chesscom_honeybadger.config"/>
+        </service>
+
         <service id="chesscom_honeybadger.exception_listener" class="%chesscom_honeybadger.exception_listener.class%">
+            <argument type="service" id="chesscom_honeybadger.client"/>
             <argument>%chesscom_honeybadger.ignored_exceptions%</argument>
             <tag name="kernel.event_listener" event="kernel.exception" method="onKernelException" />
         </service>
 
         <service id="chesscom_honeybadger.shutdown_listener" class="%chesscom_honeybadger.shutdown_listener.class%">
+            <argument type="service" id="chesscom_honeybadger.client"/>
             <tag name="kernel.event_listener" event="kernel.controller" method="register" />
         </service>
 	</services>

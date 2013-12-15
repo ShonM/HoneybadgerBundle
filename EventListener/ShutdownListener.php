@@ -2,11 +2,18 @@
 
 namespace Chesscom\HoneybadgerBundle\EventListener;
 
-use Honeybadger\Error;
+use Chesscom\HoneybadgerBundle\Bridge\Honeybadger;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 
 class ShutdownListener
 {
+    protected $honeybadger;
+
+    public function __construct(Honeybadger $honeybadger)
+    {
+        $this->honeybadger = $honeybadger;
+    }
+
     public function register(FilterControllerEvent $event)
     {
         register_shutdown_function(array($this, 'onShutdown'));
@@ -23,10 +30,10 @@ class ShutdownListener
             return;
         }
 
-        Error::handle($error['type'], $error, $error['file'], $error['line']);
-
         $message   = '[Shutdown Error]: %s';
         $message   = sprintf($message, $error['message']);
         error_log($message.' in: '.$error['file'].':'.$error['line']);
+
+        $this->honeybadger->handleError($error['type'], $error, $error['file'], $error['line']);
     }
 }

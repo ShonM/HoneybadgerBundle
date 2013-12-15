@@ -2,15 +2,18 @@
 
 namespace Chesscom\HoneybadgerBundle\EventListener;
 
-use Honeybadger\Exception;
+use Chesscom\HoneybadgerBundle\Bridge\Honeybadger;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 
 class ExceptionListener
 {
+    protected $honeybadger;
+
     protected $ignoredExceptions;
 
-    public function __construct(array $ignoredExceptions = array())
+    public function __construct(Honeybadger $honeybadger, array $ignoredExceptions = array())
     {
+        $this->honeybadger = $honeybadger;
         $this->ignoredExceptions = $ignoredExceptions;
     }
 
@@ -24,7 +27,8 @@ class ExceptionListener
             }
         }
 
-        Exception::handle($exception);
-        error_log($exception->getMessage().' in: '.$exception->getFile().':'.$exception->getLine());
+        error_log($exception->getMessage() . ' in: ' . $exception->getFile() . ':' . $exception->getLine());
+
+        $this->honeybadger->handleException($exception);
     }
 }

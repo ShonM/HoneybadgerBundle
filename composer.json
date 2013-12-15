@@ -7,7 +7,7 @@
         "symfony/symfony": ">=2.3,<2.4-dev",
         "chesscom/honeybadger-php": "dev-master"
     },
-    "target-dir": "ChessCom/HoneybadgerBundle",
+    "target-dir": "Chesscom/HoneybadgerBundle",
     "autoload": {
         "psr-0": {
             "Chesscom\\HoneybadgerBundle": ""
